@@ -5,17 +5,20 @@ import st1_utils
 import pandas as pd
 from datasets import Dataset 
 from st1_utils import load_df_from_tsv
-from transformers import AutoTokenizer, AutoModelForSequenceClassification
+from transformers import AutoTokenizer, AutoModelForSequenceClassification 
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support, f1_score
 from transformers import Trainer, TrainingArguments, TrainerCallback, DataCollatorWithPadding
 import torch
 import numpy as np
 import wandb
+from transformers.adapters import LoRAConfig
 
+from transformers import AdapterTrainer, AutoAdapterModel
+from transformers.adapters import CompacterConfig, AdapterConfig, PfeifferConfig 
 from datasets import concatenate_datasets
 
 import json 
-from transformers import set_seed
+from transformers import set_seed 
 
 
 
@@ -29,8 +32,6 @@ def objective(config):
         train_df = st1_utils.holdout_lang(train_df, 'en')['held_out']
 
         print('After filtering',len(train_df))
-
-
     train_ds = Dataset.from_pandas(train_df)
 
     print(train_ds.select([0]))
@@ -102,8 +103,21 @@ def objective(config):
         return final_metrics
 
 
-    model = AutoModelForSequenceClassification.from_pretrained(config['base_model'], num_labels=3)
-    
+    model = AutoAdapterModel.from_pretrained(config['base_model'])
+    model.add_classification_head('st1', num_labels=3)
+
+
+
+    my_adapter_config = PfeifferConfig(
+        reduction_factor=fixed_config['reduction_factor'],
+        )
+
+    model.add_adapter("st1", config=my_adapter_config)
+
+    model.train_adapter('st1')
+    model.set_active_adapters('st1')
+
+
     trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
     print("Trainable parameters:", trainable_params)
 
@@ -112,7 +126,7 @@ def objective(config):
     print("Non-trainable parameters:", non_trainable_params)
 
 
-    class MyTrainer(Trainer):
+    class MyAdapterTrainer(AdapterTrainer):
             
         def compute_loss(self, model, inputs, return_outputs=False):
             labels = inputs.pop("labels")
@@ -154,7 +168,7 @@ def objective(config):
         # run_name = config['output_dir']
     )
 
-    trainer = MyTrainer(
+    trainer = MyAdapterTrainer(
         model=model,
         args=training_args,
         train_dataset=train_ds,
@@ -178,12 +192,14 @@ def main():
     wandb.finish()
 
 
+
 fixed_config = {
     'path_to_train': 'st1/processed_data/train.tsv',
     'path_to_eval': 'st1/processed_data/dev.tsv', 
     'training_lang': 'original', 
 
-    'output_dir': 'models/fft',
+    'output_dir': 'models/pfeiffer',
+
     'en_only': False, 
 
     'base_model': 'xlm-roberta-large',
@@ -194,10 +210,11 @@ fixed_config = {
     'weight_decay': 0.01, 
     'num_train_epochs': 30, 
 
-    #fixed params
-    'learning_rate': 1e-5
-}
 
+    #fixed params
+    'reduction_factor': 4,
+    'learning_rate': 3.16e-5
+}
 
 
 os.environ["WANDB_RUN_GROUP"] = fixed_config['output_dir']
