@@ -192,8 +192,8 @@ def main():
 
 
 fixed_config = {
-    'path_to_train': 'processed_data/clean_training_with_translations.tsv',
-    'path_to_eval': 'processed_data/clean_dev_with_translations.tsv', 
+    'path_to_train': 'st2/processed_data/train.tsv',
+    'path_to_eval': 'st2/processed_data/dev.tsv', 
     'training_lang': 'original', 
 
     'output_dir': 'models/pfeiffer',

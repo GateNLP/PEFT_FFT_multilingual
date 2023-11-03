@@ -164,6 +164,10 @@ def produce_joined_data(path_to_data_folder = 'data/', save_location = 'st2/proc
             df['dataset_origin'] = df['text'].apply(lambda x: dataset_origin)
             df['lang'] = df['text'].apply(lambda x: lang)
 
+            save_path = save_location + dataset_origin + '.tsv'
+            df.to_csv(save_path, sep = '\t')
+
+
             joined_df = pd.concat([joined_df, df], ignore_index = True)
     
     save_path = save_location + 'joined.tsv'
