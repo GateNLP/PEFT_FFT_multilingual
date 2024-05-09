@@ -1,0 +1,52 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the associated paper"
+authors:
+- family-names: "Razuvayevskaya"
+  given-names: "Olesya"
+- family-names: "Wu"
+  given-names: "Ben"
+- family-names: "Leite"
+  given-names: "João A."
+- family-names: "Heppell"
+  given-names: "Freddy"
+- family-names: "Srba"
+  given-names: "Ivan"
+- family-names: "Scarton"
+  given-names: "Carolina"
+- family-names: "Bontcheva"
+  given-names: "Kalina"
+- family-names: "Song"
+  given-names: "Xingyi"
+title: "Comparison between parameter-efficient techniques and full fine-tuning: A case study on multilingual news article classification"
+doi: 10.5281/zenodo.10066649
+date-released: 2024-05-03
+url: "https://github.com/GateNLP/PEFT_FFT_multilingual"
+preferred-citation:
+  type: "article"
+  authors:
+    - family-names: "Razuvayevskaya"
+      given-names: "Olesya"
+    - family-names: "Wu"
+      given-names: "Ben"
+    - family-names: "Leite"
+      given-names: "João A."
+    - family-names: "Heppell"
+      given-names: "Freddy"
+    - family-names: "Srba"
+      given-names: "Ivan"
+    - family-names: "Scarton"
+      given-names: "Carolina"
+    - family-names: "Bontcheva"
+      given-names: "Kalina"
+    - family-names: "Song"
+      given-names: "Xingyi"
+  doi: "10.1371/journal.pone.0301738"
+  title: "Comparison between parameter-efficient techniques and full fine-tuning: A case study on multilingual news article classification"
+  journal: "PLOS ONE"
+  month: 5
+  year: 2024
+  volume: 19
+  issue: 5
+  start: 1
+  end: 26
+  url: https://doi.org/10.1371/journal.pone.0301738
